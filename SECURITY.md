@@ -6,7 +6,7 @@ Only the latest release receives fixes. Please check that a problem still occurs
 
 ## Reporting a vulnerability
 
-Please **do not open a public issue** for security problems. Report them privately through [GitHub's private vulnerability reporting](https://github.com/RonTom42/linkdash/security/advisories/new) and include the steps to reproduce, the linkdash version, and what an attacker could achieve.
+Please **do not open a public issue** for security problems. Report them privately with GitHub's private vulnerability reporting: open this repository's **Security** tab and choose **Report a vulnerability**. Include the steps to reproduce, the linkdash version, and what an attacker could achieve.
 
 linkdash is maintained in spare time, so responses are best effort. You can expect an acknowledgement within a week. Once a fix is released, the advisory will be published, crediting you if you like.
 

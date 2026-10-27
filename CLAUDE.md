@@ -65,10 +65,16 @@ The page file is chosen by `-f FILE`, then `$LINKDASH_FILE`, then `./linkdash.ht
 
 ## Repository, CI and releases
 
-- **Module and license:** module `github.com/RonTom42/linkdash`, MIT licensed.
+- **Module and license:** MIT licensed. The module path in `go.mod` names the upstream repository. Forks keep it unless they become a separate project. Otherwise, don't hard-code the repo's owner or name in docs: use `gh`'s `{owner}`/`{repo}` placeholders or relative wording, so the instructions also work in a fork.
 - **Community files:** `README.md`, `CONTRIBUTING.md` and `SECURITY.md` are user-facing; keep them in sync with behavior changes. Issue forms live in `.github/ISSUE_TEMPLATE/`.
 - **CI (`.github/workflows/ci.yml`):** runs the mise tasks on Ubuntu and macOS.
 - **Action pinning:** actions are pinned to commit SHAs with a version comment, and Dependabot (`.github/dependabot.yml`) updates them. Keep that style.
+- **Branch protection:** in the upstream repository, `main` is protected by the GitHub ruleset "Protect main". Rulesets live in the repository settings, so a fork starts without one.
+  - a pull request is required, with 0 approvals
+  - the `Lint`, `Test (ubuntu-latest)` and `Test (macos-latest)` checks must pass
+  - force pushes and deletion are blocked
+  - Repository admins can bypass it, so a direct push to `main` may succeed. Don't push to `main` anyway: work on a branch and open a PR with `gh pr create`.
+  - The ruleset names the checks, not the workflow. If a CI job is renamed or the OS matrix changes, PRs wait forever for a check that never runs. Update the ruleset's required checks in the same change: `gh api 'repos/{owner}/{repo}/rulesets'` fills in the placeholders from the current checkout.
 - **Version:** `main.version` is injected by GoReleaser's ldflags. `buildVersion()` falls back to the module version from `go install …@vX.Y.Z`, then to `(devel)`.
 - **Releases:** pushing a `vX.Y.Z` tag runs `.github/workflows/release.yml`, which tests and then runs GoReleaser (`.goreleaser.yaml`, linux and darwin × amd64 and arm64).
   - Archive names deliberately contain no version, because the README's `releases/latest/download/linkdash_<os>_<arch>.tar.gz` URLs depend on it.
