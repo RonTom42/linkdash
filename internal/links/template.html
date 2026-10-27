@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="generator" content="linkdash">
+<title>{{.Title}}</title>
+<style>
+:root {
+  --bg: #f5f6f8;
+  --card: #ffffff;
+  --text: #1c1f24;
+  --muted: #69707d;
+  --border: #e2e5ea;
+  --link: #1f5bd8;
+  --hover: #eef3fe;
+  --focus: #1f5bd8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101216;
+    --card: #181b20;
+    --text: #e4e6ea;
+    --muted: #959caa;
+    --border: #2a2e36;
+    --link: #8cb0ff;
+    --hover: #212836;
+    --focus: #8cb0ff;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+main { max-width: 84rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+h1 { margin: 0; font-size: 1.6rem; font-weight: 650; letter-spacing: -0.01em; }
+#search {
+  flex: 0 1 22rem;
+  min-width: 12rem;
+  padding: 0.55rem 0.8rem;
+  font: inherit;
+  color: inherit;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+#search:focus { outline: 2px solid var(--focus); outline-offset: -1px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem 0.9rem;
+}
+h2 {
+  margin: 0 0 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+ul { list-style: none; margin: 0; padding: 0; }
+li a {
+  display: block;
+  margin: 0 -0.5rem;
+  padding: 0.28rem 0.5rem;
+  border-radius: 0.375rem;
+  color: var(--link);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+li a:hover { background: var(--hover); }
+li a:focus-visible { background: var(--hover); outline: 2px solid var(--focus); outline-offset: -2px; }
+.note { color: var(--muted); }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9em; }
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>{{.Title}}</h1>
+{{- if .Categories}}
+<input id="search" type="search" placeholder="Search links ( / )" aria-label="Search links" autocomplete="off" autofocus>
+{{- end}}
+</header>
+{{- if .Categories}}
+<div class="grid">
+{{- range .Categories}}
+<section>
+<h2>{{.Name}}</h2>
+<ul>
+{{- range .Links}}
+<li><a href="{{href .URL}}" title="{{.URL}}" target="_blank" rel="noopener noreferrer">{{.Name}}</a></li>
+{{- end}}
+</ul>
+</section>
+{{- end}}
+</div>
+<p id="no-match" class="note" hidden>No matching links.</p>
+<script>
+(() => {
+  const search = document.getElementById("search");
+  const sections = [...document.querySelectorAll(".grid section")];
+  const noMatch = document.getElementById("no-match");
+
+  function filter() {
+    const terms = search.value.toLowerCase().split(/\s+/).filter(Boolean);
+    let anyShown = false;
+    for (const section of sections) {
+      const category = section.querySelector("h2").textContent;
+      let shown = 0;
+      for (const li of section.querySelectorAll("li")) {
+        const a = li.querySelector("a");
+        const text = (category + " " + a.textContent + " " + a.title).toLowerCase();
+        li.hidden = !terms.every((t) => text.includes(t));
+        if (!li.hidden) shown++;
+      }
+      section.hidden = shown === 0;
+      anyShown = anyShown || shown > 0;
+    }
+    noMatch.hidden = anyShown;
+  }
+
+  search.addEventListener("input", filter);
+  search.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      const first = document.querySelector(".grid section:not([hidden]) li:not([hidden]) a");
+      if (!first) return;
+      e.preventDefault();
+      window.open(first.href, "_blank", "noopener,noreferrer");
+    } else if (e.key === "Escape") {
+      search.value = "";
+      filter();
+    }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && document.activeElement !== search && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      search.focus();
+      search.select();
+    }
+  });
+  filter(); // the browser may restore the search text on back navigation
+})();
+</script>
+{{- else}}
+<p class="note">No links yet. Add one with <code>linkdash add -c CATEGORY NAME URL</code>.</p>
+{{- end}}
+</main>
+<script type="application/json" id="linkdash-data">{{.Data}}</script>
+</body>
+</html>

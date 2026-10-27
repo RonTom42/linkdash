@@ -1,0 +1,77 @@
+name: Bug report
+description: Something in linkdash or the page it generates does not work as expected.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Your bookmarks may be private: please replace real
+        names and URLs with placeholders (e.g. `https://example.com`) in anything you paste below.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include the exact output or error message.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The commands you ran, starting from an empty file if possible.
+      placeholder: |
+        linkdash -f /tmp/test.html add -c Dev "Example" https://example.com
+        linkdash -f /tmp/test.html remove Example
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where does it happen?
+      options:
+        - CLI command (arguments)
+        - Interactive list or prompts (add/remove in a terminal)
+        - Generated HTML page
+        - Installation or release binaries
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: linkdash version
+      description: Output of `linkdash version`.
+      placeholder: linkdash v0.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: OS and terminal
+      placeholder: macOS 26.1, Ghostty 1.2
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser (for problems with the page)
+      placeholder: Firefox 144
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched the existing issues and this has not been reported yet.
+          required: true
+        - label: I removed private links and names from everything I pasted.
+          required: true

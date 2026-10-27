@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest an improvement to the CLI or the generated page.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        linkdash deliberately stays small: one self-contained HTML file, hand-written HTML/CSS/JS,
+        no frameworks and no external requests. Ideas that fit within that are very welcome.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe what you are trying to do and what gets in the way today.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How should it work? Example commands or a sketch of the page help a lot.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched the existing issues and this has not been suggested yet.
+          required: true
+        - label: The page would stay a single self-contained file without frameworks or external requests.

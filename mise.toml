@@ -1,0 +1,19 @@
+[tools]
+go = "1.27"
+golangci-lint = "2.15.0"
+
+[tasks.test]
+description = "Run all tests with the race detector"
+run = "go test -race ./..."
+
+[tasks.lint]
+description = "Run golangci-lint (linters and formatting checks)"
+run = "golangci-lint run"
+
+[tasks.build]
+description = "Build ./linkdash"
+run = "go build -o linkdash ./cmd/linkdash"
+
+[tasks.check]
+description = "Everything CI checks: lint and test"
+depends = ["lint", "test"]
